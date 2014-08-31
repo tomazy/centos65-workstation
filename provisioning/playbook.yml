@@ -1,0 +1,30 @@
+---
+- hosts: all
+  vars:
+    - repo: '/etc/yum.repos.d/CentOS-Base.repo'
+
+  tasks:
+    - shell: cat {{repo}}
+      register: current_repo
+
+    - name: Configure YUM repo
+      sudo: yes
+      shell: printf "[{{item}}]\nexclude=postgresql*\n" >> {{repo}}
+      when: "'exclude=postgresql' not in '{{current_repo.stdout}}'"
+      with_items:
+        - base
+        - updates
+
+    - name: Install PGDG RPM file
+      sudo: yes
+      yum:  name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm
+
+    - name: Install postgresql
+      sudo: yes
+      yum:  name={{item}}
+      with_items:
+        - postgresql93
+        - postgresql93-server
+        - postgresql93-devel
+        - postgresql93-libs
+        - postgresql93-contrib
