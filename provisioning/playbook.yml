@@ -28,3 +28,15 @@
         - postgresql93-devel
         - postgresql93-libs
         - postgresql93-contrib
+
+    - name: Initialize
+      sudo: yes
+      shell: service postgresql-9.3 initdb
+
+    - name: Startup
+      sudo: yes
+      shell: chkconfig postgresql-9.3 on
+
+    - name: Control service
+      sudo: yes
+      service: name=postgresql-9.3 state=started
