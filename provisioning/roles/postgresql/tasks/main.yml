@@ -1,0 +1,40 @@
+- shell: cat {{repo}}
+  register: current_repo
+
+- name: Configure YUM repo
+  sudo: yes
+  shell: printf "[{{item}}]\nexclude=postgresql*\n" >> {{repo}}
+  when: "'exclude=postgresql' not in '{{current_repo.stdout}}'"
+  with_items:
+    - base
+    - updates
+
+- shell: yum repolist
+  register: repolist
+
+- name: Install PGDG RPM file
+  sudo: yes
+  yum:  name=http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-centos93-9.3-1.noarch.rpm
+  when: "'PostgreSQL 9.3 6 - x86_64' not in '{{repolist.stdout}}'"
+
+- name: Install postgresql
+  sudo: yes
+  yum:  name={{item}}
+  with_items:
+    - postgresql93
+    - postgresql93-server
+    - postgresql93-devel
+    - postgresql93-libs
+    - postgresql93-contrib
+
+- name: Initialize
+  sudo: yes
+  shell: service postgresql-9.3 initdb
+
+- name: Startup
+  sudo: yes
+  shell: chkconfig postgresql-9.3 on
+
+- name: Control service
+  sudo: yes
+  service: name=postgresql-9.3 state=started
