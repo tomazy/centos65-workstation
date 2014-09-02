@@ -1,0 +1,25 @@
+---
+- name: Dependencies
+  yum: name={{ item }} state=installed
+  sudo: yes
+  with_items:
+    - git
+    - curl
+
+- name: Clone nvm
+  git: >
+    repo=https://github.com/creationix/nvm.git
+    dest=~/.nvm
+    update=no
+
+- name: Enable nvm
+  lineinfile: >
+    dest=~/.bash_profile
+    line="source ~/.nvm/nvm.sh"
+    state=present
+
+- name: Install nodejs
+  command: bash -lc "nvm install 0.10"
+
+- name: Set default nodejs
+  command: bash -lc  "nvm alias default 0.10"

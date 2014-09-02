@@ -11,6 +11,7 @@
   roles:
     - { role: 'postgresql', tags: ['postgresql'] }
     - { role: 'ruby',       tags: ['ruby'] }
+    - { role: 'nodejs',     tags: ['nodejs'] }
 
   tasks:
     - name: Default gems
