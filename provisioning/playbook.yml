@@ -1,6 +1,19 @@
 ---
 - hosts: all
+
+  pre_tasks:
+    - yum: name={{item}} state=installed
+      sudo: yes
+      with_items:
+        - libselinux-python
+      tags: ['ruby']
+
   roles:
     - { role: 'postgresql', tags: ['postgresql'] }
+    - { role: 'ruby',       tags: ['ruby'] }
 
   tasks:
+    - name: Default gems
+      shell: bash -lc 'gem install {{item}}'
+      with_items:
+        - pry
