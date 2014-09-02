@@ -15,5 +15,7 @@
   tasks:
     - name: Default gems
       shell: bash -lc 'gem install {{item}}'
+      tags: ['ruby']
       with_items:
         - pry
+        - pg -- --with-pg-config=/usr/pgsql-9.3/bin/pg_config
