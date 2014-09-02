@@ -14,7 +14,7 @@
 
   tasks:
     - name: Default gems
-      shell: bash -lc 'gem install {{item}}'
+      shell: bash -lc 'gem install --no-document --conservative {{item}}'
       tags: ['ruby']
       with_items:
         - pry
